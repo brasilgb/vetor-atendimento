@@ -1,6 +1,8 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppShell } from '@/components/app-shell';
 import { Button, Card, TextMuted, Title } from '@/components/ui-kit';
@@ -12,6 +14,7 @@ export default function AtendimentoScreen() {
   const colors = Colors[useColorScheme() ?? 'light'];
   const router = useRouter();
   const { baseUrl, session, signOut } = useSession();
+  const insets = useSafeAreaInsets();
   const [loading, setLoading] = useState(false);
 
   async function handleLogout() {
@@ -30,7 +33,20 @@ export default function AtendimentoScreen() {
 
   return (
     <AppShell>
-      <Card>
+      <View style={[styles.workspaceHeader, { backgroundColor: colors.accent, paddingTop: Math.max(18, insets.top + 12) }]}>
+        <View style={styles.headerActions}>
+          <View style={styles.headerUserIcon}>
+            <MaterialIcons name="account-circle" size={24} color="#ffffff" />
+          </View>
+          <Pressable
+            onPress={handleLogout}
+            disabled={loading}
+            style={({ pressed }) => [styles.headerIconButton, { opacity: loading ? 0.58 : pressed ? 0.72 : 1 }]}
+            accessibilityRole="button"
+            accessibilityLabel="Sair">
+            <MaterialIcons name="logout" size={21} color="#ffffff" />
+          </Pressable>
+        </View>
         <View style={styles.companyRow}>
           <View style={styles.companyLogoWrap}>
             <Image
@@ -40,23 +56,14 @@ export default function AtendimentoScreen() {
             />
           </View>
           <View style={styles.companyText}>
-            <TextMuted>Empresa</TextMuted>
-            <Text style={[styles.companyName, { color: colors.text }]}>
+            <Text style={styles.eyebrow}>Atendimento interno</Text>
+            <Text style={styles.companyName} numberOfLines={2}>
               {session.company?.name || 'VetorOS'}
             </Text>
+            <Text style={styles.operatorName}>{session.user.name}</Text>
           </View>
         </View>
-      </Card>
-
-      <Card>
-        <Title>Atendimento interno</Title>
-        <View style={styles.profileRow}>
-          <View>
-            <Text style={[styles.name, { color: colors.text }]}>{session.user.name}</Text>
-            <TextMuted>{session.user.email}</TextMuted>
-          </View>
-        </View>
-      </Card>
+      </View>
 
       <Card>
         <Title>Ações rápidas</Title>
@@ -75,42 +82,80 @@ export default function AtendimentoScreen() {
 }
 
 const styles = StyleSheet.create({
+  workspaceHeader: {
+    marginHorizontal: -16,
+    marginTop: -18,
+    borderBottomLeftRadius: 22,
+    borderBottomRightRadius: 22,
+    paddingHorizontal: 18,
+    paddingTop: 18,
+    paddingBottom: 22,
+    gap: 20,
+    overflow: 'hidden',
+  },
+  headerActions: {
+    minHeight: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerUserIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  headerIconButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  },
   companyRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
   },
   companyLogoWrap: {
-    width: 64,
-    height: 64,
-    borderRadius: 18,
+    width: 54,
+    height: 54,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#0b1220',
-    borderWidth: 1,
-    borderColor: 'rgba(245, 244, 239, 0.12)',
+    backgroundColor: 'transparent',
   },
   companyLogo: {
-    width: 48,
-    height: 48,
+    width: 40,
+    height: 40,
   },
   companyText: {
     flex: 1,
     minWidth: 0,
   },
+  eyebrow: {
+    color: 'rgba(255, 255, 255, 0.74)',
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+  },
   companyName: {
+    marginTop: 2,
+    color: '#ffffff',
+    fontSize: 25,
+    lineHeight: 31,
+    fontWeight: '800',
+  },
+  operatorName: {
     marginTop: 4,
-    fontSize: 22,
-    lineHeight: 28,
-    fontWeight: '700',
-  },
-  profileRow: {
-    gap: 12,
-  },
-  name: {
-    fontSize: 18,
-    lineHeight: 24,
-    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.82)',
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: '600',
   },
   actions: {
     gap: 10,
