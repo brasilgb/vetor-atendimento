@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { router } from 'expo-router';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useSession } from '@/lib/session-context';
 
@@ -17,27 +18,29 @@ export default function AppHeader({ back, close, logout, user }: AppHeaderProps)
   const avatar = getUserAvatar(session?.user);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.side}>
-        {user ? (
-          avatar ? (
-            <AvatarButton avatar={avatar} baseUrl={baseUrl} onPress={() => router.replace('/home')} />
-          ) : (
-            <IconButton name="account-circle" onPress={() => router.replace('/home')} />
-          )
-        ) : null}
-        {back ? <IconButton name="chevron-left" onPress={() => router.back()} /> : null}
-      </View>
+    <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <View style={styles.container}>
+        <View style={styles.side}>
+          {user ? (
+            avatar ? (
+              <AvatarButton avatar={avatar} baseUrl={baseUrl} onPress={() => router.replace('/home')} />
+            ) : (
+              <IconButton name="account-circle" onPress={() => router.replace('/home')} />
+            )
+          ) : null}
+          {back ? <IconButton name="chevron-left" onPress={() => router.back()} /> : null}
+        </View>
 
-      <View style={styles.logoWrap}>
-        <Image source={logoSource} style={styles.logo} resizeMode="contain" />
-      </View>
+        <View style={styles.logoWrap}>
+          <Image source={logoSource} style={styles.logo} resizeMode="contain" />
+        </View>
 
-      <View style={[styles.side, styles.sideRight]}>
-        {close ? <IconButton name="close" onPress={() => router.replace('/home')} /> : null}
-        {logout ? <IconButton name="logout" onPress={() => signOut()} /> : null}
+        <View style={[styles.side, styles.sideRight]}>
+          {close ? <IconButton name="close" onPress={() => router.replace('/home')} /> : null}
+          {logout ? <IconButton name="logout" onPress={() => signOut()} /> : null}
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -96,15 +99,18 @@ function AvatarButton({ avatar, baseUrl, onPress }: { avatar: string; baseUrl: s
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    backgroundColor: '#15365f',
+  },
   container: {
-    height: 80,
+    height: 74,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    backgroundColor: '#0b1220',
+    backgroundColor: '#15365f',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(245, 244, 239, 0.12)',
+    borderBottomColor: 'rgba(255, 255, 255, 0.14)',
   },
   side: {
     width: 44,
@@ -114,35 +120,31 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   iconButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 36,
+    height: 36,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#101a2d',
-    borderWidth: 1,
-    borderColor: 'rgba(245, 244, 239, 0.12)',
+    backgroundColor: 'transparent',
   },
   pressed: {
     opacity: 0.72,
   },
   logoWrap: {
-    width: 48,
-    height: 48,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#101a2d',
-    borderWidth: 1,
-    borderColor: 'rgba(245, 244, 239, 0.12)',
-  },
-  logo: {
-    width: 34,
-    height: 34,
-  },
-  avatar: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+  logo: {
+    width: 32,
+    height: 32,
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
   },
 });

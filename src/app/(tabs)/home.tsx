@@ -5,7 +5,7 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppShell } from '@/components/app-shell';
-import { Button, Card, TextMuted, Title } from '@/components/ui-kit';
+import { Card, TextMuted } from '@/components/ui-kit';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSession } from '@/lib/session-context';
@@ -66,18 +66,76 @@ export default function AtendimentoScreen() {
       </View>
 
       <Card>
-        <Title>Ações rápidas</Title>
         <View style={styles.actions}>
-          <Button onPress={() => router.push('/clientes')}>Cadastrar cliente</Button>
-          <Button onPress={() => router.push('/orcamentos')} variant="secondary">
-            Ver orçamentos
-          </Button>
-          <Button onPress={handleLogout} loading={loading} variant="secondary">
-            Sair
-          </Button>
+          <QuickAction
+            icon="person-add"
+            label="Cadastrar cliente"
+            description="Novo cadastro para atendimento"
+            onPress={() => router.push('/clientes')}
+            backgroundColor={colors.tint}
+            iconColor="#ffffff"
+            textColor="#ffffff"
+          />
+          <QuickAction
+            icon="request-quote"
+            label="Ver orçamentos"
+            description="Consultar valores e compartilhar"
+            onPress={() => router.push('/orcamentos')}
+            backgroundColor={colors.tint}
+            iconColor="#ffffff"
+            textColor="#ffffff"
+          />
         </View>
       </Card>
     </AppShell>
+  );
+}
+
+function QuickAction({
+  icon,
+  label,
+  description,
+  onPress,
+  backgroundColor,
+  borderColor,
+  iconColor,
+  textColor,
+  mutedTextColor = 'rgba(255, 255, 255, 0.78)',
+}: {
+  icon: keyof typeof MaterialIcons.glyphMap;
+  label: string;
+  description: string;
+  onPress: () => void;
+  backgroundColor: string;
+  borderColor?: string;
+  iconColor: string;
+  textColor: string;
+  mutedTextColor?: string;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.quickAction,
+        {
+          backgroundColor,
+          borderColor: borderColor ?? backgroundColor,
+          opacity: pressed ? 0.76 : 1,
+        },
+      ]}>
+      <View style={[styles.quickIcon, { backgroundColor: iconColor === '#ffffff' ? 'rgba(255, 255, 255, 0.18)' : '#ffffff' }]}>
+        <MaterialIcons name={icon} size={24} color={iconColor} />
+      </View>
+      <View style={styles.quickText}>
+        <Text style={[styles.quickLabel, { color: textColor }]}>{label}</Text>
+        <Text style={[styles.quickDescription, { color: mutedTextColor }]} numberOfLines={2}>
+          {description}
+        </Text>
+      </View>
+      <MaterialIcons name="chevron-right" size={24} color={mutedTextColor} />
+    </Pressable>
   );
 }
 
@@ -158,7 +216,39 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   actions: {
-    gap: 10,
+    gap: 12,
+  },
+  quickAction: {
+    alignItems: 'center',
+    borderRadius: 12,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 12,
+    minHeight: 76,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  quickIcon: {
+    alignItems: 'center',
+    borderRadius: 10,
+    height: 46,
+    justifyContent: 'center',
+    width: 46,
+  },
+  quickText: {
+    flex: 1,
+    minWidth: 0,
+  },
+  quickLabel: {
+    fontSize: 16,
+    fontWeight: '800',
+    lineHeight: 21,
+  },
+  quickDescription: {
+    fontSize: 13,
+    fontWeight: '600',
+    lineHeight: 18,
+    marginTop: 2,
   },
 });
 
