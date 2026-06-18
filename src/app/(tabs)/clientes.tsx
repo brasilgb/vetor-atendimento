@@ -239,12 +239,12 @@ export default function ClientesScreen() {
         </View>
 
         <View style={[styles.twoColumns, isWide && styles.twoColumnsWide]}>
-          <Field label="Telefone" value={form.phone} onChangeText={(phone) => setForm((current) => ({ ...current, phone }))} keyboardType="phone-pad" containerStyle={styles.flexField} error={fieldErrors.phone} />
-          <Field label="WhatsApp" value={form.whatsapp} onChangeText={(whatsapp) => setForm((current) => ({ ...current, whatsapp }))} keyboardType="phone-pad" containerStyle={styles.flexField} error={fieldErrors.whatsapp} />
+          <Field label="Telefone" value={form.phone} onChangeText={(phone) => setForm((current) => ({ ...current, phone: maskPhone(phone) }))} keyboardType="phone-pad" maxLength={15} containerStyle={styles.flexField} error={fieldErrors.phone} />
+          <Field label="WhatsApp" value={form.whatsapp} onChangeText={(whatsapp) => setForm((current) => ({ ...current, whatsapp: maskPhone(whatsapp) }))} keyboardType="phone-pad" maxLength={15} containerStyle={styles.flexField} error={fieldErrors.whatsapp} />
         </View>
         <View style={[styles.twoColumns, isWide && styles.twoColumnsWide]}>
           <Field label="Nome do contato" value={form.contactname} onChangeText={(contactname) => setForm((current) => ({ ...current, contactname }))} containerStyle={styles.flexField} error={fieldErrors.contactname} />
-          <Field label="Telefone do contato" value={form.contactphone} onChangeText={(contactphone) => setForm((current) => ({ ...current, contactphone }))} keyboardType="phone-pad" containerStyle={styles.flexField} error={fieldErrors.contactphone} />
+          <Field label="Telefone do contato" value={form.contactphone} onChangeText={(contactphone) => setForm((current) => ({ ...current, contactphone: maskPhone(contactphone) }))} keyboardType="phone-pad" maxLength={15} containerStyle={styles.flexField} error={fieldErrors.contactphone} />
         </View>
         <Field label="Observacoes" value={form.observations} onChangeText={(observations) => setForm((current) => ({ ...current, observations }))} multiline error={fieldErrors.observations} />
         {message ? <Message tone={message.includes('sucesso') ? 'info' : 'error'}>{message}</Message> : null}
@@ -281,6 +281,20 @@ function maskCep(value: string) {
   return normalizeDocument(value)
     .slice(0, 8)
     .replace(/^(\d{5})(\d)/, '$1-$2');
+}
+
+function maskPhone(value: string) {
+  const digits = normalizeDocument(value).slice(0, 11);
+
+  if (digits.length <= 10) {
+    return digits
+      .replace(/^(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{4})(\d)/, '$1-$2');
+  }
+
+  return digits
+    .replace(/^(\d{2})(\d)/, '($1) $2')
+    .replace(/(\d{5})(\d)/, '$1-$2');
 }
 
 function emptyToUndefined(value: unknown) {

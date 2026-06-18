@@ -70,12 +70,17 @@ export function SessionProvider({ children }: PropsWithChildren) {
         router.replace('/home');
       },
       async signOut() {
-        if (session) {
-          await logoutRequest(DEFAULT_BASE_URL, session.accessToken).catch(() => undefined);
-        }
-        await AsyncStorage.removeItem(STORAGE_SESSION);
+        const serverLogout = session
+          ? logoutRequest(DEFAULT_BASE_URL, session.accessToken).catch(() => undefined)
+          : Promise.resolve();
+
         setSession(null);
         router.replace('/' as never);
+
+        await Promise.allSettled([
+          AsyncStorage.removeItem(STORAGE_SESSION),
+          serverLogout,
+        ]);
       },
     }),
     [isRestoring, session],
