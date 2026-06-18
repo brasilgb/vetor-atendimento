@@ -5,7 +5,6 @@
 
 import { Platform } from 'react-native';
 
-<<<<<<< HEAD
 const appColors = {
   text: '#f5f4ef',
   background: '#0b1220',
@@ -26,41 +25,6 @@ const appColors = {
 export const Colors = {
   light: appColors,
   dark: appColors,
-=======
-const tintColorDark = '#2f7dd1';
-
-export const Colors = {
-  light: {
-    text: '#172033',
-    background: '#eef2f7',
-    tint: '#2f7dd1',
-    card: '#ffffff',
-    muted: '#f4f7fb',
-    mutedText: '#637083',
-    border: '#d8e0ea',
-    accent: '#15365f',
-    accentText: '#ffffff',
-    success: '#197a55',
-    icon: '#637083',
-    tabIconDefault: '#637083',
-    tabIconSelected: '#2f7dd1',
-  },
-  dark: {
-    text: '#eef3f8',
-    background: '#0f1724',
-    tint: tintColorDark,
-    card: '#151f2d',
-    muted: '#1e2a3b',
-    mutedText: '#a6b2c2',
-    border: '#2f3d50',
-    accent: '#234b7b',
-    accentText: '#ffffff',
-    success: '#32b07c',
-    icon: '#a6b2c2',
-    tabIconDefault: '#a6b2c2',
-    tabIconSelected: tintColorDark,
-  },
->>>>>>> 7652f985c11ce24c5bbddc303e077d27831a7405
 };
 
 export const Fonts = Platform.select({
