@@ -1,6 +1,10 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import * as SecureStore from 'expo-secure-store';
 import { router } from 'expo-router';
+<<<<<<< HEAD
+=======
+import { Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+>>>>>>> 7652f985c11ce24c5bbddc303e077d27831a7405
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -14,6 +18,12 @@ import {
 } from 'react-native';
 
 import { AppShell } from '@/components/app-shell';
+<<<<<<< HEAD
+=======
+import { Button, Card, Field, Message, TextMuted } from '@/components/ui-kit';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+>>>>>>> 7652f985c11ce24c5bbddc303e077d27831a7405
 import { ApiError } from '@/lib/api';
 import { useSession } from '@/lib/session-context';
 
@@ -23,6 +33,7 @@ const SAVED_PASSWORD_KEY = '@VetorAtendimento:password';
 export default function LoginScreen() {
   const { width } = useWindowDimensions();
   const { isRestoring, session, signIn } = useSession();
+  const colors = Colors[useColorScheme() ?? 'light'];
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -94,6 +105,7 @@ export default function LoginScreen() {
     }
   }
 
+<<<<<<< HEAD
   if (isRestoring) {
     return (
       <View style={styles.restoring}>
@@ -188,10 +200,61 @@ export default function LoginScreen() {
         </View>
       </View>
     </AppShell>
+=======
+  return (
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardView}>
+      <AppShell centered>
+        <View style={styles.loginLayout}>
+          <View style={styles.brandPanel}>
+            <View style={styles.logoCard}>
+              <Image source={require('@/assets/images/logo.png')} style={styles.logo} resizeMode="contain" />
+            </View>
+            <Text style={styles.brandKicker}>Operação interna</Text>
+            <Text style={styles.brandTitle}>VetorOS Atendimento</Text>
+            <Text style={styles.brandText}>Clientes, orçamentos e rotinas de balcão em uma área de trabalho objetiva.</Text>
+          </View>
+
+          <Card style={styles.loginCard}>
+            <View>
+              <Text style={[styles.formTitle, { color: colors.text }]}>Acesso do atendimento</Text>
+              <TextMuted>Informe suas credenciais para abrir sua área interna.</TextMuted>
+            </View>
+            <Field
+              label="E-mail"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              leftIcon={<MaterialIcons name="mail" size={21} color="#637083" />}
+            />
+            <Field
+              label="Senha"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+              leftIcon={<MaterialIcons name="lock" size={21} color="#637083" />}
+              rightIcon={
+                <Pressable
+                  onPress={() => setShowPassword((current) => !current)}
+                  style={({ pressed }) => [styles.passwordButton, pressed && styles.pressed]}>
+                  <MaterialIcons name={showPassword ? 'visibility-off' : 'visibility'} size={24} color="#637083" />
+                </Pressable>
+              }
+            />
+            {message ? <Message tone="error">{message}</Message> : null}
+            <Button onPress={handleLogin} loading={loading}>
+              Entrar
+            </Button>
+          </Card>
+        </View>
+      </AppShell>
+    </KeyboardAvoidingView>
+>>>>>>> 7652f985c11ce24c5bbddc303e077d27831a7405
   );
 }
 
 const styles = StyleSheet.create({
+<<<<<<< HEAD
   restoring: {
     flex: 1,
     alignItems: 'center',
@@ -273,9 +336,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 6,
-    borderWidth: 1,
-    borderColor: 'rgba(245, 244, 239, 0.12)',
+=======
+  keyboardView: {
+    flex: 1,
   },
+  loginLayout: {
+    width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'stretch',
+    gap: 18,
+  },
+  brandPanel: {
+    flexGrow: 1,
+    flexBasis: 320,
+    borderRadius: 8,
+    padding: 24,
+    justifyContent: 'center',
+    backgroundColor: '#15365f',
+  },
+  logoCard: {
+    width: 84,
+    height: 84,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+>>>>>>> 7652f985c11ce24c5bbddc303e077d27831a7405
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.16)',
+  },
+<<<<<<< HEAD
   checkboxChecked: { borderColor: '#00b4ff', backgroundColor: '#00b4ff' },
   rememberText: { color: '#f5f4ef', fontSize: 14 },
   error: { color: '#f97066', fontSize: 14, textAlign: 'center' },
@@ -285,6 +376,53 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 8,
     backgroundColor: '#00b4ff',
+=======
+  logo: {
+    width: 62,
+    height: 62,
+  },
+  brandKicker: {
+    marginTop: 22,
+    color: 'rgba(255, 255, 255, 0.72)',
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+  },
+  brandTitle: {
+    marginTop: 4,
+    color: '#ffffff',
+    fontSize: 31,
+    lineHeight: 38,
+    fontWeight: '900',
+  },
+  brandText: {
+    marginTop: 12,
+    color: 'rgba(255, 255, 255, 0.82)',
+    fontSize: 15,
+    lineHeight: 22,
+    fontWeight: '600',
+  },
+  loginCard: {
+    flexGrow: 1,
+    flexBasis: 340,
+    justifyContent: 'center',
+  },
+  formTitle: {
+    fontSize: 22,
+    lineHeight: 28,
+    fontWeight: '900',
+  },
+  passwordButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+  },
+  pressed: {
+    opacity: 0.72,
+>>>>>>> 7652f985c11ce24c5bbddc303e077d27831a7405
   },
   loginButtonText: { color: '#0b1220', fontSize: 16, fontWeight: '700' },
   pressed: { opacity: 0.72 },

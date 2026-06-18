@@ -26,7 +26,10 @@
     "expo-linking": "~8.0.12",
     "expo-print": "~15.0.8",
     "expo-router": "~6.0.23",
+<<<<<<< HEAD
     "expo-secure-store": "~15.0.8",
+=======
+>>>>>>> 7652f985c11ce24c5bbddc303e077d27831a7405
     "expo-sharing": "~14.0.8",
     "expo-splash-screen": "~31.0.13",
     "expo-status-bar": "~3.0.9",

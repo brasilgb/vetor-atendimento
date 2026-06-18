@@ -248,7 +248,38 @@ export async function getBudgets(baseUrl: string, token: string, query: BudgetQu
     }
   });
 
-  return request<BudgetResult>(baseUrl, `/orcamentos?${params.toString()}`, token);
+  const result = await request<BudgetResult | Budget[] | null | undefined>(
+    baseUrl,
+    `/orcamentos?${params.toString()}`,
+    token,
+  );
+
+  return normalizeBudgetResult(result, query);
+}
+
+function normalizeBudgetResult(result: BudgetResult | Budget[] | null | undefined, query: BudgetQuery): BudgetResult {
+  if (!result) {
+    return {
+      filters: query,
+      budgets: [],
+    };
+  }
+
+  if (Array.isArray(result)) {
+    return {
+      filters: query,
+      budgets: result,
+    };
+  }
+
+  return {
+    filters: {
+      equipment_id: result.filters?.equipment_id ?? query.equipment_id,
+      model: result.filters?.model ?? query.model,
+      service: result.filters?.service ?? query.service,
+    },
+    budgets: Array.isArray(result.budgets) ? result.budgets : [],
+  };
 }
 
 function normalizeModelList(result: ModelListResponse | string[] | Budget[]) {
