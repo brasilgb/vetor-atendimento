@@ -112,13 +112,14 @@ export function Button({
         styles.button,
         {
           backgroundColor: isPrimary ? colors.tint : colors.muted,
+          borderColor: isPrimary ? colors.tint : colors.border,
           opacity: pressed || loading ? 0.72 : 1,
         },
       ]}>
       {loading ? (
-        <ActivityIndicator color={isPrimary ? '#ffffff' : colors.text} />
+        <ActivityIndicator color={isPrimary ? colors.tintText : colors.text} />
       ) : (
-        <Text style={[styles.buttonText, { color: isPrimary ? '#ffffff' : colors.text }]}>{children}</Text>
+        <Text style={[styles.buttonText, { color: isPrimary ? colors.tintText : colors.text }]}>{children}</Text>
       )}
     </Pressable>
   );
@@ -145,7 +146,7 @@ export function Chip({
           borderColor: selected ? colors.tint : colors.border,
         },
       ]}>
-      <Text style={[styles.chipText, { color: selected ? '#ffffff' : colors.text }]} numberOfLines={1}>
+      <Text style={[styles.chipText, { color: selected ? colors.tintText : colors.text }]} numberOfLines={1}>
         {label}
       </Text>
     </Pressable>
@@ -172,9 +173,9 @@ export function Message({ children, tone = 'info' }: PropsWithChildren<{ tone?: 
 const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
-    borderRadius: 16,
-    padding: 20,
-    gap: 12,
+    borderRadius: 8,
+    padding: 18,
+    gap: 16,
   },
   title: {
     fontSize: 22,
@@ -207,15 +208,15 @@ const styles = StyleSheet.create({
   inputWrap: {
     minHeight: 58,
     borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 12,
+    borderRadius: 8,
+    paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
   },
   selectWrap: {
     minHeight: 58,
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: 8,
     overflow: 'hidden',
     justifyContent: 'center',
   },
@@ -225,7 +226,8 @@ const styles = StyleSheet.create({
   },
   button: {
     minHeight: 56,
-    borderRadius: 12,
+    borderRadius: 8,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 14,
@@ -236,7 +238,7 @@ const styles = StyleSheet.create({
   },
   chip: {
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     maxWidth: 220,

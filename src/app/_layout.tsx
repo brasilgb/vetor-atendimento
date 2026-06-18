@@ -23,7 +23,7 @@ export default function RootLayout() {
           }}
         />
       </Stack>
-      <StatusBar style="light" translucent />
+      <StatusBar style="light" backgroundColor="#15365f" />
     </SessionProvider>
   );
 }

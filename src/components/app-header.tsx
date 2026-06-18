@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { router } from 'expo-router';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useSession } from '@/lib/session-context';
 
@@ -12,12 +13,13 @@ type AppHeaderProps = {
 };
 
 export default function AppHeader({ back, close, logout, user }: AppHeaderProps) {
+  const insets = useSafeAreaInsets();
   const { baseUrl, session, signOut } = useSession();
   const logoSource = getCompanyLogoSource(session?.company?.logo_url ?? session?.company?.logo, baseUrl);
   const avatar = getUserAvatar(session?.user);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { height: 74 + insets.top, paddingTop: insets.top }]}>
       <View style={styles.side}>
         {user ? (
           avatar ? (
@@ -97,14 +99,13 @@ function AvatarButton({ avatar, baseUrl, onPress }: { avatar: string; baseUrl: s
 
 const styles = StyleSheet.create({
   container: {
-    height: 80,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    backgroundColor: '#0b1220',
+    backgroundColor: '#15365f',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(245, 244, 239, 0.12)',
+    borderBottomColor: 'rgba(255, 255, 255, 0.15)',
   },
   side: {
     width: 44,
@@ -114,35 +115,30 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   iconButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 38,
+    height: 38,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#101a2d',
-    borderWidth: 1,
-    borderColor: 'rgba(245, 244, 239, 0.12)',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   pressed: {
     opacity: 0.72,
   },
   logoWrap: {
-    width: 48,
-    height: 48,
-    borderRadius: 16,
+    width: 40,
+    height: 40,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#101a2d',
-    borderWidth: 1,
-    borderColor: 'rgba(245, 244, 239, 0.12)',
   },
   logo: {
     width: 34,
     height: 34,
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 34,
+    height: 34,
+    borderRadius: 8,
   },
 });

@@ -1,9 +1,9 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AppShell } from '@/components/app-shell';
-import { Button, Card, TextMuted, Title } from '@/components/ui-kit';
+import { Card, TextMuted, Title } from '@/components/ui-kit';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSession } from '@/lib/session-context';
@@ -11,14 +11,7 @@ import { useSession } from '@/lib/session-context';
 export default function AtendimentoScreen() {
   const colors = Colors[useColorScheme() ?? 'light'];
   const router = useRouter();
-  const { baseUrl, session, signOut } = useSession();
-  const [loading, setLoading] = useState(false);
-
-  async function handleLogout() {
-    setLoading(true);
-    await signOut();
-    setLoading(false);
-  }
+  const { baseUrl, session } = useSession();
 
   if (!session) {
     return (
@@ -59,15 +52,23 @@ export default function AtendimentoScreen() {
       </Card>
 
       <Card>
-        <Title>Ações rápidas</Title>
         <View style={styles.actions}>
-          <Button onPress={() => router.push('/clientes')}>Cadastrar cliente</Button>
-          <Button onPress={() => router.push('/orcamentos')} variant="secondary">
-            Ver orçamentos
-          </Button>
-          <Button onPress={handleLogout} loading={loading} variant="secondary">
-            Sair
-          </Button>
+          <ActionButton
+            icon="person-add"
+            title="Cadastrar cliente"
+            description="Adicione um novo cliente"
+            backgroundColor={colors.tint}
+            textColor={colors.tintText}
+            onPress={() => router.push('/clientes')}
+          />
+          <ActionButton
+            icon="description"
+            title="Ver orçamentos"
+            description="Consulte valores e serviços"
+            backgroundColor={colors.tint}
+            textColor={colors.tintText}
+            onPress={() => router.push('/orcamentos')}
+          />
         </View>
       </Card>
     </AppShell>
@@ -83,12 +84,12 @@ const styles = StyleSheet.create({
   companyLogoWrap: {
     width: 64,
     height: 64,
-    borderRadius: 18,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#0b1220',
+    backgroundColor: '#15365f',
     borderWidth: 1,
-    borderColor: 'rgba(245, 244, 239, 0.12)',
+    borderColor: 'rgba(255, 255, 255, 0.15)',
   },
   companyLogo: {
     width: 48,
@@ -113,9 +114,74 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   actions: {
-    gap: 10,
+    gap: 12,
+  },
+  actionButton: {
+    minHeight: 72,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  actionIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(11, 18, 32, 0.12)',
+  },
+  actionText: {
+    flex: 1,
+  },
+  actionTitle: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: '800',
+  },
+  actionDescription: {
+    marginTop: 2,
+    fontSize: 13,
+    lineHeight: 18,
+    opacity: 0.72,
   },
 });
+
+function ActionButton({
+  icon,
+  title,
+  description,
+  backgroundColor,
+  textColor,
+  onPress,
+}: {
+  icon: keyof typeof MaterialIcons.glyphMap;
+  title: string;
+  description: string;
+  backgroundColor: string;
+  textColor: string;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.actionButton,
+        { backgroundColor, opacity: pressed ? 0.78 : 1 },
+      ]}>
+      <View style={styles.actionIcon}>
+        <MaterialIcons name={icon} size={24} color={textColor} />
+      </View>
+      <View style={styles.actionText}>
+        <Text style={[styles.actionTitle, { color: textColor }]}>{title}</Text>
+        <Text style={[styles.actionDescription, { color: textColor }]}>{description}</Text>
+      </View>
+      <MaterialIcons name="chevron-right" size={24} color={textColor} />
+    </Pressable>
+  );
+}
 
 function getCompanyLogoSource(logo: string | null | undefined, baseUrl: string) {
   if (!logo) {

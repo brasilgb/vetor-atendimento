@@ -1,10 +1,12 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AppShell } from '@/components/app-shell';
 import { Card, Message, SelectField, TextMuted, Title } from '@/components/ui-kit';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { shareBudgetPdf } from '@/lib/budget-pdf';
 import {
   ApiError,
   Budget,
@@ -30,6 +32,7 @@ export default function OrcamentosScreen() {
   const [loading, setLoading] = useState(false);
   const [loadingModels, setLoadingModels] = useState(false);
   const [loadingServices, setLoadingServices] = useState(false);
+  const [sharingBudgetId, setSharingBudgetId] = useState<number | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const token = session?.accessToken;
 
@@ -173,6 +176,22 @@ export default function OrcamentosScreen() {
     loadReport();
   }, [loadReport]);
 
+  const handleShareBudget = useCallback(
+    async (budget: Budget) => {
+      setSharingBudgetId(budget.id);
+      setMessage(null);
+
+      try {
+        await shareBudgetPdf(budget, session?.company);
+      } catch (error) {
+        setMessage(error instanceof Error ? error.message : 'Não foi possível compartilhar o orçamento.');
+      } finally {
+        setSharingBudgetId(null);
+      }
+    },
+    [session?.company],
+  );
+
   if (!session) {
     return (
       <AppShell>
@@ -202,7 +221,16 @@ export default function OrcamentosScreen() {
           <Title>Orçamentos encontrados</Title>
           {report.budgets.length === 0 ? <TextMuted>Nenhum orçamento encontrado.</TextMuted> : null}
           {report.budgets.map((budget) => (
-            <BudgetItem key={budget.id} budget={budget} borderColor={colors.border} textColor={colors.text} />
+            <BudgetItem
+              key={budget.id}
+              budget={budget}
+              borderColor={colors.border}
+              textColor={colors.text}
+              tintColor={colors.tint}
+              tintTextColor={colors.tintText}
+              sharing={sharingBudgetId === budget.id}
+              onShare={() => handleShareBudget(budget)}
+            />
           ))}
         </Card>
       ) : null}
@@ -210,7 +238,23 @@ export default function OrcamentosScreen() {
   );
 }
 
-function BudgetItem({ budget, borderColor, textColor }: { budget: Budget; borderColor: string; textColor: string }) {
+function BudgetItem({
+  budget,
+  borderColor,
+  textColor,
+  tintColor,
+  tintTextColor,
+  sharing,
+  onShare,
+}: {
+  budget: Budget;
+  borderColor: string;
+  textColor: string;
+  tintColor: string;
+  tintTextColor: string;
+  sharing: boolean;
+  onShare: () => void;
+}) {
   return (
     <View style={[styles.orderItem, { borderColor }]}>
       <Text style={[styles.orderTitle, { color: textColor }]}>
@@ -228,6 +272,24 @@ function BudgetItem({ budget, borderColor, textColor }: { budget: Budget; border
         Prazo: {formatHours(budget.estimated_time)} | Garantia: {formatMonths(budget.warranty)}
       </TextMuted>
       {budget.obs ? <TextMuted>Obs: {budget.obs}</TextMuted> : null}
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`Compartilhar orçamento ${budget.budget_number} em PDF`}
+        disabled={sharing}
+        onPress={onShare}
+        style={({ pressed }) => [
+          styles.shareButton,
+          { backgroundColor: tintColor, opacity: pressed || sharing ? 0.65 : 1 },
+        ]}>
+        {sharing ? (
+          <ActivityIndicator color={tintTextColor} />
+        ) : (
+          <MaterialIcons name="picture-as-pdf" size={20} color={tintTextColor} />
+        )}
+        <Text style={[styles.shareButtonText, { color: tintTextColor }]}>
+          {sharing ? 'Gerando PDF...' : 'Compartilhar PDF'}
+        </Text>
+      </Pressable>
     </View>
   );
 }
@@ -260,6 +322,20 @@ const styles = StyleSheet.create({
   },
   orderTitle: {
     fontSize: 16,
+    fontWeight: '700',
+  },
+  shareButton: {
+    minHeight: 46,
+    marginTop: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  shareButtonText: {
+    fontSize: 14,
     fontWeight: '700',
   },
 });

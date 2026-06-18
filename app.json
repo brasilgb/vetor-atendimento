@@ -1,25 +1,26 @@
 {
   "expo": {
     "name": "VetorOS Atendimento",
-    "slug": "vetor-atendimento",
+    "slug": "vetorosatendimento",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "vetoratendimento",
+    "scheme": "vetorosatendimento",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.andersonbrodrigues.vetoratendimento"
+      "bundleIdentifier": "com.andersonbrodrigues.vetorosatendimento"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#0b1220"
       },
-      "edgeToEdgeEnabled": true,
+      "edgeToEdgeEnabled": false,
+      "softwareKeyboardLayoutMode": "resize",
       "predictiveBackGestureEnabled": false,
-      "package": "com.andersonbrodrigues.vetoratendimento"
+      "package": "com.andersonbrodrigues.vetorosatendimento"
     },
     "web": {
       "output": "static",
@@ -33,13 +34,14 @@
           "backgroundColor": "#0b1220",
           "image": "./assets/images/splash-icon.png",
           "dark": {
-            "image": "./assets/images/splas       h-icon.png",
+            "image": "./assets/images/splash-icon.png",
             "backgroundColor": "#0b1220"
           },
           "imageWidth": 200
         }
       ],
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
