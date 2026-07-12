@@ -7,6 +7,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 export function AppShell({ children, centered, avoidKeyboard }: PropsWithChildren<{ centered?: boolean; avoidKeyboard?: boolean }>) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const keyboardBehavior = Platform.OS === 'ios' ? 'padding' : 'height';
 
   const content = (
     <ScrollView
@@ -19,14 +20,14 @@ export function AppShell({ children, centered, avoidKeyboard }: PropsWithChildre
     </ScrollView>
   );
 
-  if (!avoidKeyboard || Platform.OS !== 'ios') {
+  if (!avoidKeyboard) {
     return content;
   }
 
   return (
     <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: colors.background }]}
-      behavior="padding">
+      behavior={keyboardBehavior}>
       {content}
     </KeyboardAvoidingView>
   );

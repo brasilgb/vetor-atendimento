@@ -192,7 +192,7 @@ export default function ClientesScreen() {
   }
 
   return (
-    <AppShell>
+    <AppShell avoidKeyboard>
       <Card>
         <Title>Pre-cadastro de cliente</Title>
         <Field label="Nome" value={form.name} onChangeText={(name) => setForm((current) => ({ ...current, name }))} error={fieldErrors.name} />
