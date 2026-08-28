@@ -284,6 +284,71 @@ Erro de validacao `422`:
 }
 ```
 
+## Ordens de Servico e Assinatura Digital
+
+A OS em si (abertura do recebimento do equipamento) e feita no balcao, pelo app web. O app mobile
+so consulta as ordens de um cliente e registra a assinatura digital do cliente numa ordem ja
+existente (ex: tecnico visita o cliente com a OS ja aberta e colhe a assinatura no tablet).
+
+### Listar Ordens de um Cliente
+
+```http
+GET /api/ordercli/{customer_id}
+```
+
+Sucesso `200`:
+
+```json
+{
+  "success": true,
+  "result": [
+    {
+      "id": 10,
+      "order_number": 123,
+      "customer_id": 5,
+      "defect": "Nao liga",
+      "service_type": null,
+      "service_status": 1,
+      "model": "Inspiron 15",
+      "created_at": "2026-08-28T12:00:00.000000Z",
+      "has_customer_signature": false,
+      "customer_signature_url": null
+    }
+  ]
+}
+```
+
+`has_customer_signature` e `customer_signature_url` indicam se a OS ja tem assinatura registrada.
+
+### Registrar Assinatura do Cliente
+
+```http
+POST /api/order/{order_number}/assinatura
+```
+
+Payload (PNG em base64, com ou sem o prefixo `data:image/png;base64,`):
+
+```json
+{
+  "customer_signature": "iVBORw0KGgoAAAANSUhEUgAA..."
+}
+```
+
+Sucesso `200`:
+
+```json
+{
+  "success": true,
+  "message": "Assinatura registrada com sucesso.",
+  "result": {
+    "order_number": 123,
+    "customer_signature_url": "https://seu-dominio.com.br/storage/orders/123/signature.png"
+  }
+}
+```
+
+Assinar novamente sobrescreve a assinatura anterior da mesma OS.
+
 ## Orcamentos por Equipamento, Modelo e Servico
 
 No banco atual:
@@ -562,6 +627,7 @@ Campos usados no relatorio:
 | `delivery_forecast` | Previsao de entrega |
 | `delivery_date` | Data de entrega |
 | `is_warranty_return` | Indica retorno em garantia |
+| `customer_signature_captured_at` | Data/hora em que a assinatura digital do cliente foi registrada (null se ainda nao assinada) |
 | `created_at`, `updated_at` | Controle de sincronizacao |
 
 ## Roteiro de Gravacao por Tenant no App

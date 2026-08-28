@@ -65,6 +65,21 @@ export type ReportFilters = {
   equipments: Equipment[];
 };
 
+export type Order = {
+  id: number;
+  order_number: number;
+  customer_id: number;
+  equipment_id?: number | null;
+  defect?: string | null;
+  service_type?: string | null;
+  service_status?: number | null;
+  model?: string | null;
+  created_at?: string;
+  has_customer_signature?: boolean;
+  customer_signature_url?: string | null;
+  equipment?: { id: number; equipment: string } | null;
+};
+
 export type Budget = {
   id: number;
   tenant_id: number;
@@ -207,6 +222,22 @@ export async function createCustomer(baseUrl: string, token: string, payload: Cu
 
 export async function getReportFilters(baseUrl: string, token: string) {
   return request<ReportFilters>(baseUrl, '/orcamentos/filtros', token);
+}
+
+export async function getOrdersByCustomer(baseUrl: string, token: string, customerId: number) {
+  return request<Order[]>(baseUrl, `/ordercli/${customerId}`, token);
+}
+
+export async function submitOrderSignature(baseUrl: string, token: string, orderNumber: number, signature: string) {
+  return request<{ order_number: number; customer_signature_url: string | null }>(
+    baseUrl,
+    `/order/${orderNumber}/assinatura`,
+    token,
+    {
+      method: 'POST',
+      body: JSON.stringify({ customer_signature: signature }),
+    },
+  );
 }
 
 export async function getBudgetModels(baseUrl: string, token: string, equipmentId: number) {
